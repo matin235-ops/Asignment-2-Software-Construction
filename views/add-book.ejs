@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-book"></i> Book Management System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/books/add">
+                            <i class="bi bi-plus-circle"></i> Add Book
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api" target="_blank">
+                            <i class="bi bi-code-slash"></i> API
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Add New Book</li>
+                    </ol>
+                </nav>
+
+                <!-- Error Messages -->
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-danger">
+                        <h6><i class="bi bi-exclamation-triangle"></i> Please fix the following errors:</h6>
+                        <ul class="mb-0">
+                            <% errors.forEach(error => { %>
+                                <li>
+                                    <%= error %>
+                                </li>
+                                <% }); %>
+                        </ul>
+                    </div>
+                    <% } %>
+
+                        <!-- Add Book Form -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">
+                                    <i class="bi bi-plus-circle"></i> Add New Book
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="/books" novalidate>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="title" class="form-label">
+                                            <i class="bi bi-book"></i> Title *
+                                        </label>
+                                                <input type="text" class="form-control" id="title" name="title" value="<%= book.title || '' %>" required>
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid book title.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="author" class="form-label">
+                                            <i class="bi bi-person"></i> Author *
+                                        </label>
+                                                <input type="text" class="form-control" id="author" name="author" value="<%= book.author || '' %>" required>
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid author name.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="genre" class="form-label">
+                                            <i class="bi bi-tag"></i> Genre *
+                                        </label>
+                                                <input type="text" class="form-control" id="genre" name="genre" value="<%= book.genre || '' %>" required list="genreSuggestions">
+                                                <datalist id="genreSuggestions">
+                                            <option value="Fiction">
+                                            <option value="Non-Fiction">
+                                            <option value="Science Fiction">
+                                            <option value="Fantasy">
+                                            <option value="Mystery">
+                                            <option value="Romance">
+                                            <option value="Thriller">
+                                            <option value="Biography">
+                                            <option value="History">
+                                            <option value="Classic">
+                                            <option value="Young Adult">
+                                            <option value="Children's">
+                                        </datalist>
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid genre.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="publicationYear" class="form-label">
+                                            <i class="bi bi-calendar"></i> Publication Year *
+                                        </label>
+                                                <input type="number" class="form-control" id="publicationYear" name="publicationYear" value="<%= book.publicationYear || '' %>" min="1000" max="<%= new Date().getFullYear() %>" required>
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid publication year.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="favorite" name="favorite" value="true" <%=b ook.favorite ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="favorite">
+                                        <i class="bi bi-heart"></i> Mark as Favorite
+                                    </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="/" class="btn btn-secondary me-md-2">
+                                            <i class="bi bi-arrow-left"></i> Cancel
+                                        </a>
+                                        <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-plus-circle"></i> Add Book
+                                </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Sample Data Info -->
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-info-circle"></i> Quick Add Examples
+                                </h6>
+                                <p class="card-text small text-muted">
+                                    Need inspiration? Try adding books like:
+                                    <strong>"Dune" by Frank Herbert (Science Fiction, 1965)</strong> or
+                                    <strong>"The Hobbit" by J.R.R. Tolkien (Fantasy, 1937)</strong>
+                                </p>
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light mt-5 py-3">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">
+                <i class="bi bi-book"></i> Book Management System &copy; 2025
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+
+    <script>
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByTagName('form');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</body>
+
+</html>
